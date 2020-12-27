@@ -559,6 +559,14 @@
 	vdda-phy-dpdm-supply = <&vreg_l24a_3p075>;
 };
 
+&cpufreq_hw {
+	status = "ok";
+};
+
+&apc_cprh {
+	status = "ok";
+};
+
 &wifi {
 	status = "okay";
 
