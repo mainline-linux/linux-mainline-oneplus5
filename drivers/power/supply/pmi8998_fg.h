@@ -15,7 +15,7 @@
 #define PM8998_SUBTYPE		0x14
 #define PMI8998_SUBTYPE		0x15
 
-// pm8950 / pm89988 common
+// pm8950 / pm8998 common
 #define MEM_INTF_IMA_CFG            0x52
 #define MEM_INTF_IMA_OPR_STS        0x54
 #define MEM_INTF_IMA_EXP_STS        0x55
@@ -24,14 +24,14 @@
 #define MEM_INTF_IMA_ERR_STS        0x5f
 #define MEM_INTF_IMA_BYTE_EN        0x60
 
-#define BATT_INFO_THERM_C1          0x5c
+#define BATT_INFO_THERM_C1          0x5c // ok
 #define BATT_INFO_VBATT_LSB         0xa0
 #define BATT_INFO_VBATT_MSB         0xa1
 #define BATT_INFO_IBATT_LSB         0xa2
 #define BATT_INFO_IBATT_MSB         0xa3
-#define BATT_INFO_BATT_TEMP_LSB     0x50
-#define BATT_INFO_BATT_TEMP_MSB     0x51
-#define BATT_MONOTONIC_SOC          0x09
+#define BATT_INFO_BATT_TEMP_LSB     0x50 // ok
+#define BATT_INFO_BATT_TEMP_MSB     0x51 // ok
+#define BATT_MONOTONIC_SOC          0x09 // ok
 
 #define BATT_TEMP_LSB_MASK          GENMASK(7, 0)
 #define BATT_TEMP_MSB_MASK          GENMASK(2, 0)
@@ -45,17 +45,18 @@
 #define INT_EN_CLR                  0x16
 
 // Param addresses
-#define PARAM_ADDR_BATT_TEMP       0x50
+//#define PARAM_ADDR_BATT_TEMP       0x50
 #define PARAM_ADDR_BATT_VOLTAGE    0xa0
 #define PARAM_ADDR_BATT_CURRENT    0xa2
 
-#define BATT_INFO_JEITA_COLD(chip)		(REG_BATT + 0x62)
-#define BATT_INFO_JEITA_COOL(chip)		(REG_BATT + 0x63)
-#define BATT_INFO_JEITA_WARM(chip)		(REG_BATT + 0x64)
-#define BATT_INFO_JEITA_HOT(chip)		(REG_BATT + 0x65)
+// TDO: Confirm from downstream
+//#define BATT_INFO_JEITA_COLD(chip)		(REG_BATT + 0x62)
+//#define BATT_INFO_JEITA_COOL(chip)		(REG_BATT + 0x63)
+//#define BATT_INFO_JEITA_WARM(chip)		(REG_BATT + 0x64)
+//#define BATT_INFO_JEITA_HOT(chip)		(REG_BATT + 0x65)
 
 #define MISC_BASE	0x1600
-#define USBIN_BASE  0x1300
+#define USBIN_BASE	0x1300
 
 #define BATTERY_CHARGER_STATUS_REG(chip)	(chip->chg_base + 0x06)
 #define BATTERY_HEALTH_STATUS_REG(chip)	(chip->chg_base + 0x07)

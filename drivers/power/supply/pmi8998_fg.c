@@ -36,6 +36,7 @@ static int pmi8998_read(struct regmap *map, u8 *val, u16 addr, int len)
 		return -EINVAL;
 	}
 
+	// FIXME: Turn into a pr_dbg() after done debugging
 	pr_info("%s: reading 0x%x bytes from 0x%x", __func__, len, addr);
 
 	return regmap_bulk_read(map, addr, val, len);
@@ -66,6 +67,9 @@ static int pmi8998_write(struct regmap *map, u8 *val, u16 addr, int len)
 		pr_err("addr cannot be zero base=0x%02x\n", addr);
 		return -EINVAL;
 	}
+
+	// FIXME: Remove after done debugging
+	pr_info("%s: writing 0x%x bytes to 0x%x", __func__, len, addr);
 
 	return regmap_bulk_write(map, addr, val, len);
 }
@@ -115,6 +119,7 @@ static int64_t twos_compliment_extend(int64_t val, int nbytes)
  * Battery Status RW
  * ***********************/
 
+// fg_get_prop_capacity
 static int pmi8998_fg_get_capacity(struct pmi8998_fg_chip *chip, int *val)
 {
 	u8 cap[2];
@@ -128,6 +133,7 @@ static int pmi8998_fg_get_capacity(struct pmi8998_fg_chip *chip, int *val)
 	return 0;
 }
 
+#if 0
 static int pmi8998_fg_get_temperature(struct pmi8998_fg_chip *chip, int *val)
 {
 	int rc, temp;
@@ -138,13 +144,14 @@ static int pmi8998_fg_get_temperature(struct pmi8998_fg_chip *chip, int *val)
 		pr_err("Failed to read temperature\n");
 		return rc;
 	}
-	temp = ((readval[1] & BATT_TEMP_MSB_MASK) << 8) |
-		(readval[0] & BATT_TEMP_LSB_MASK);
+	temp = ((readval[0] & BATT_TEMP_MSB_MASK) << 8) |
+		(readval[1] & BATT_TEMP_LSB_MASK);
 	temp = DIV_ROUND_CLOSEST(temp * 10, 4);
 
 	*val = temp -2730;
 	return 0;
 }
+#endif
 
 static int pmi8998_fg_get_current(struct pmi8998_fg_chip *chip, int *val)
 {
@@ -321,7 +328,7 @@ int pmi8998_get_prop_batt_status(struct pmi8998_fg_chip *chip, int *val){
 		dev_err(chip->dev, "Charging status REGMAP read failed! ret=%d\n", rc);
 		return rc;
 	}
-		
+
 	stat = stat & BATTERY_CHARGER_STATUS_MASK;
 	dev_dbg(chip->dev, "Charging status : %d!\n", stat);
 
@@ -370,6 +377,7 @@ int pmi8998_get_prop_health_status(struct pmi8998_fg_chip *chip, int *val){
 	return rc;
 }
 
+#if 0
 static int pmi8998_get_temp_threshold(struct pmi8998_fg_chip *chip,
 				enum power_supply_property psp, int *val)
 {
@@ -404,6 +412,7 @@ static int pmi8998_get_temp_threshold(struct pmi8998_fg_chip *chip,
 	*val = (((5 * temp) / 10) - 30) * 10;
 	return 0;
 }
+#endif
 
 static void fg_get_model_name(struct pmi8998_fg_chip *chip, union power_supply_propval *val)
 {
@@ -467,6 +476,7 @@ static int fg_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_CHARGE_FULL: /* TODO: Implement capacity learning */
 		val->intval = chip->batt_cap_uah;
 		break;
+#if 0
 	case POWER_SUPPLY_PROP_TEMP:
 		error = pmi8998_fg_get_temperature(chip, &val->intval);
 		break;
@@ -476,6 +486,7 @@ static int fg_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_TEMP_ALERT_MAX:
 		error = pmi8998_get_temp_threshold(chip, psp, &val->intval);
 		break;
+#endif
 	//POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,POWER_SUPPLY_PROP_TIME_TO_FULL_AVG - calculate time remaining for full charge - implementable
 	//POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW,POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG - calculate time remaining when discharging - implementable
 	//POWER_SUPPLY_PROP_CHARGE_NOW - requires capacity learning
